@@ -8,6 +8,13 @@ Server::Server(QObject *parent) : QObject(parent) {
   m_server = new QLocalServer(this);
 }
 
+Server::~Server() {
+  if (m_server->isListening()) {
+    m_server->close();
+    m_server->removeServer("capybara-webkit");
+  }
+}
+
 bool Server::start() {
   connect(m_server, SIGNAL(newConnection()), this, SLOT(handleConnection()));
   return m_server->listen("capybara-webkit");

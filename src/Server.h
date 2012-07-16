@@ -7,6 +7,7 @@ class Server : public QObject {
 
   public:
     Server(QObject *parent);
+    ~Server();
     bool start();
     QString server_name();
 
