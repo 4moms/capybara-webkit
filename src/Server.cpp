@@ -2,22 +2,22 @@
 #include "Connection.h"
 #include "WebPageManager.h"
 
-#include <QTcpServer>
+#include <QLocalServer>
 
 Server::Server(QObject *parent) : QObject(parent) {
-  m_tcp_server = new QTcpServer(this);
+  m_server = new QLocalServer(this);
 }
 
 bool Server::start() {
-  connect(m_tcp_server, SIGNAL(newConnection()), this, SLOT(handleConnection()));
-  return m_tcp_server->listen(QHostAddress::LocalHost, 0);
+  connect(m_server, SIGNAL(newConnection()), this, SLOT(handleConnection()));
+  return m_server->listen("capybara-webkit");
 }
 
-quint16 Server::server_port() const {
-  return m_tcp_server->serverPort();
+QString Server::server_name() {
+  return m_server->fullServerName();
 }
 
 void Server::handleConnection() {
-  QTcpSocket *socket = m_tcp_server->nextPendingConnection();
+  QLocalSocket *socket = m_server->nextPendingConnection();
   new Connection(socket, new WebPageManager(this), this);
 }

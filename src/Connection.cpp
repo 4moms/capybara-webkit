@@ -6,9 +6,9 @@
 #include "PageLoadingCommand.h"
 #include "SocketCommand.h"
 
-#include <QTcpSocket>
+#include <QLocalSocket>
 
-Connection::Connection(QTcpSocket *socket, WebPageManager *manager, QObject *parent) :
+Connection::Connection(QLocalSocket *socket, WebPageManager *manager, QObject *parent) :
     QObject(parent) {
   m_socket = socket;
   m_manager = manager;

@@ -10,7 +10,7 @@ module Capybara::Webkit
     attr_reader :port
 
     def initialize(options = {})
-      @socket_class = options[:socket_class] || TCPSocket
+      @socket_class = UNIXSocket
       @stdout = options.has_key?(:stdout) ?  options[:stdout] : $stdout
       @command = options[:command] || SERVER_PATH
       start_server
@@ -66,7 +66,7 @@ module Capybara::Webkit
 
     def discover_port
       if IO.select([@pipe], nil, nil, WEBKIT_SERVER_START_TIMEOUT)
-        @port = ((@pipe.first || '').match(/listening on port: (\d+)/) || [])[1].to_i
+        @port = ((@pipe.first || '').match(/listening at: (\S+)/) || [])[1]
       end
     end
 
@@ -111,7 +111,7 @@ module Capybara::Webkit
     end
 
     def attempt_connect
-      @socket = @socket_class.open("127.0.0.1", @port)
+      @socket = @socket_class.open(@port)
     rescue Errno::ECONNREFUSED
     end
   end
